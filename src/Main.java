@@ -1,3 +1,4 @@
+import UI.DashboardView;
 import UI.LoginView;
 
 import javafx.application.Application;
@@ -8,13 +9,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+DashboardView dashboard =
+        new DashboardView();
 
-        LoginView loginView = new LoginView();
-
-        Scene scene = new Scene(
-                loginView.getView(),
-                400,
-                300);
+Scene scene = new Scene(
+        dashboard.getView(),
+        900,
+        600);
+        
 
         stage.setTitle("Expense Tracker");
 
