@@ -1,18 +1,27 @@
 package model;
 
+import java.time.LocalDate;
+
 public class Expense {
 
+    private LocalDate date;
     private String category;
     private String description;
     private double amount;
 
-    public Expense(String category,
+    public Expense(LocalDate date,
+                   String category,
                    String description,
                    double amount) {
 
+        this.date = date;
         this.category = category;
         this.description = description;
         this.amount = amount;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 
     public String getCategory() {
@@ -25,15 +34,5 @@ public class Expense {
 
     public double getAmount() {
         return amount;
-    }
-
-    @Override
-    public String toString() {
-
-        return category +
-                " - " +
-                description +
-                " - KES " +
-                amount;
     }
 }

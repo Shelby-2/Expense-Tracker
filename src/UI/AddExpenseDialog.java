@@ -2,9 +2,16 @@ package UI;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
 
 import model.Expense;
 
@@ -20,12 +27,24 @@ public class AddExpenseDialog {
 
         Stage stage = new Stage();
 
-        VBox root = new VBox(10);
+        stage.setTitle("Add Expense");
 
+        VBox root = new VBox(10);
         root.setPadding(new Insets(15));
 
-        ComboBox<String> categoryBox =
-                new ComboBox<>();
+        // Date
+
+        Label dateLabel = new Label("Date");
+
+        DatePicker datePicker = new DatePicker();
+
+        datePicker.setValue(LocalDate.now());
+
+        // Category
+
+        Label categoryLabel = new Label("Category");
+
+        ComboBox<String> categoryBox = new ComboBox<>();
 
         categoryBox.getItems().addAll(
                 "Food",
@@ -33,31 +52,46 @@ public class AddExpenseDialog {
                 "Shopping",
                 "Rent",
                 "Entertainment",
+                "Bills",
+                "Health",
+                "Education",
                 "Other"
         );
 
         categoryBox.setValue("Food");
 
-        TextField descriptionField =
-                new TextField();
+        // Description
+
+        Label descriptionLabel = new Label("Description");
+
+        TextField descriptionField = new TextField();
 
         descriptionField.setPromptText(
-                "Description"
+                "Enter description"
         );
 
-        TextField amountField =
-                new TextField();
+        // Amount
+
+        Label amountLabel = new Label("Amount (KES)");
+
+        TextField amountField = new TextField();
 
         amountField.setPromptText(
-                "Amount"
+                "Enter amount"
         );
 
-        Button saveButton =
-                new Button("Save");
+        // Save Button
+
+        Button saveButton = new Button("Save Expense");
+
+        saveButton.setMaxWidth(Double.MAX_VALUE);
 
         saveButton.setOnAction(e -> {
 
             try {
+
+                LocalDate date =
+                        datePicker.getValue();
 
                 String category =
                         categoryBox.getValue();
@@ -65,57 +99,108 @@ public class AddExpenseDialog {
                 String description =
                         descriptionField.getText();
 
+                if(description.isBlank()){
+
+                    throw new IllegalArgumentException(
+                            "Description cannot be empty."
+                    );
+
+                }
+
                 double amount =
                         Double.parseDouble(
                                 amountField.getText()
                         );
 
-                expense =
-                        new Expense(
-                                category,
-                                description,
-                                amount
-                        );
+                if(amount <= 0){
+
+                    throw new IllegalArgumentException(
+                            "Amount must be greater than zero."
+                    );
+
+                }
+
+                expense = new Expense(
+
+                        date,
+
+                        category,
+
+                        description,
+
+                        amount
+
+                );
 
                 stage.close();
 
-            } catch(Exception ex) {
+            }
+
+            catch(NumberFormatException ex){
 
                 Alert alert =
                         new Alert(
                                 Alert.AlertType.ERROR
                         );
 
+                alert.setTitle("Invalid Amount");
+
+                alert.setHeaderText(null);
+
                 alert.setContentText(
-                        "Invalid Amount"
+                        "Please enter a valid numeric amount."
                 );
 
                 alert.showAndWait();
+
             }
+
+            catch(IllegalArgumentException ex){
+
+                Alert alert =
+                        new Alert(
+                                Alert.AlertType.ERROR
+                        );
+
+                alert.setTitle("Input Error");
+
+                alert.setHeaderText(null);
+
+                alert.setContentText(
+                        ex.getMessage()
+                );
+
+                alert.showAndWait();
+
+            }
+
         });
 
         root.getChildren().addAll(
-                new Label("Category"),
+
+                dateLabel,
+                datePicker,
+
+                categoryLabel,
                 categoryBox,
 
-                new Label("Description"),
+                descriptionLabel,
                 descriptionField,
 
-                new Label("Amount"),
+                amountLabel,
                 amountField,
 
                 saveButton
+
         );
 
         Scene scene =
-                new Scene(root,300,250);
-
-        stage.setTitle(
-                "Add Expense"
-        );
+                new Scene(root, 350, 380);
 
         stage.setScene(scene);
 
         stage.showAndWait();
+
     }
+
 }
