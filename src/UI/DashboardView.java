@@ -62,7 +62,7 @@ public class DashboardView {
 
     private Label expenseValue;
 
-    private Label remainingValue;
+    private Label currentBalanceValue;
 
     //----------------------------------------------------
     // Balance Controls
@@ -123,7 +123,7 @@ public class DashboardView {
     expenseValue =
             new Label("KES 0.00");
 
-    remainingValue =
+    currentBalanceValue =
             new Label("KES 0.00");
 
     GridPane cards =
@@ -142,8 +142,8 @@ public class DashboardView {
     ),1,0);
 
     cards.add(createCard(
-            "Remaining",
-            remainingValue
+            "Current Balance",
+            currentBalanceValue
     ),2,0);
 
     balanceField =
@@ -154,18 +154,20 @@ public class DashboardView {
     );
 
     updateBalanceButton =
-            new Button("Update");
+            new Button("Add Income");
 
     updateBalanceButton.setOnAction(e->{
 
         try{
 
-            startingBalance =
+            double income =
                     Double.parseDouble(
                             balanceField.getText()
                     );
 
-            currentBalance = startingBalance;
+            startingBalance += income;
+
+            currentBalance += income;
 
             updateBalance();
 
@@ -415,23 +417,18 @@ private void buildExpenseTable(){
         Expense expense =
                 dialog.getExpense();
 
-        if(expense != null){
+        if (expense != null) {
 
-            expenses.add(
-                    expense
-            );
+    expenses.add(expense);
 
-            totalExpenses +=
-                    expense.getAmount();
+    totalExpenses += expense.getAmount();
 
-            currentBalance =
-                    startingBalance - totalExpenses;
+    currentBalance -= expense.getAmount();
 
-            updateBalance();
+    updateBalance();
 
-            refreshChart();
-
-        }
+    refreshChart();
+}
 
     });
 }
@@ -446,7 +443,7 @@ private void buildExpenseTable(){
                                 String.format("KES %.2f", totalExpenses)
                 );
 
-                remainingValue.setText(
+                currentBalanceValue.setText(
                                 String.format("KES %.2f", currentBalance)
                 );
 
