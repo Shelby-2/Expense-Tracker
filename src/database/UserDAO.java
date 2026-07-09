@@ -1,5 +1,6 @@
 package database;
 
+import java.sql.ResultSet;
 import model.User;
 
 import java.sql.Connection;
